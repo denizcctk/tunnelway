@@ -40,6 +40,12 @@
     #tunnelway-ui input:focus{border-color:#e0c8cb;box-shadow:0 0 0 3px #e0c8cb20}
     #tunnelway-ui .connect{white-space:nowrap;border:0;border-radius:8px;background:#e0c8cb;color:#29252a;padding:0 16px;font-size:12px;font-weight:600;cursor:pointer}
     #tunnelway-ui .pair-status{display:none;margin-top:13px;background:#393339;border:1px solid #65565c;border-radius:8px;padding:12px;color:#f1e1e4;font-size:11px;line-height:1.55}
+    #tunnelway-ui .pair-status p{margin:0 0 10px}
+    #tunnelway-ui #fingerprint-box{display:grid;gap:8px}
+    #tunnelway-ui #fingerprint-code{font:500 18px ui-monospace,Consolas,monospace;letter-spacing:1px;color:#f3e5e7}
+    #tunnelway-ui #approve-pair{justify-self:start;cursor:pointer}
+    #tunnelway-ui #approve-pair:disabled{opacity:.55;cursor:default}
+    #tunnelway-ui #network-note{margin-top:10px}
     #tunnelway-ui .right-card{padding:21px}
     #tunnelway-ui .steps{display:grid;gap:18px;margin-top:20px}
     #tunnelway-ui .step{display:grid;grid-template-columns:25px 1fr;gap:10px;align-items:start}
@@ -62,12 +68,16 @@
       <div class="grid">
         <section class="card">
           <div class="card-title"><span>Bu cihaz için eşleştirme kodu</span><span class="eyebrow">TEK KULLANIMLIK</span></div>
-          <div class="codebox"><span class="code" id="pair-code">482 · 731 · 095</span><button class="copy" id="copy-code" type="button">Kodu kopyala</button></div>
+          <div class="codebox"><span class="code" id="pair-code">— — —</span><button class="copy" id="copy-code" type="button">Kodu kopyala</button></div>
           <p class="hint">Kodu yalnızca dosya göndereceğin kişiyle paylaş. Eşleşme tamamlandığında bu kod kullanılamaz.</p>
+          <p class="hint" id="network-note" hidden></p>
           <div class="secure-note"><span>◇</span><div><b>Özel anahtar bu cihazdan çıkmaz.</b> Kod cihazları buluşturur; aktarım anahtarları cihazlarda oluşturulur.</div></div>
           <label class="input-label" for="peer-code">Karşı cihazın kodu</label>
           <div class="inputrow"><input id="peer-code" placeholder="000 · 000 · 000" maxlength="17" aria-label="Karşı cihazın tek kullanımlık kodu"><button class="connect" id="connect" type="button">Bağlan</button></div>
-          <div class="pair-status" id="pair-status" role="status" aria-live="polite">Eşleşme isteği hazır. İki cihazda görünen doğrulama ifadesini karşılaştırıp onaylayın.</div>
+          <div class="pair-status" id="pair-status" role="status" aria-live="polite">
+            <p id="pair-message"></p>
+            <div id="fingerprint-box" hidden><span class="eyebrow">İKİ CİHAZDA DA AYNI OLMALI</span><strong id="fingerprint-code"></strong><button class="copy" id="approve-pair" type="button">Kod eşleşiyor, onayla</button></div>
+          </div>
         </section>
         <section class="card right-card">
           <div class="card-title"><span>Güvenli eşleşme</span><span style="color:#e0c8cb;font-size:11px">● Hazır</span></div>
@@ -82,9 +92,7 @@
       <div class="foot"><span>Oturum bilgisi ve aktarım geçmişi kaydedilmez</span><span>Önizleme · Bağlantı şu an örnek akıştır</span></div>
     </main>
   </div>
-  <script>
-    (()=>{const root=document.getElementById('tunnelway-ui');const copy=root.querySelector('#copy-code');const code=root.querySelector('#pair-code');const input=root.querySelector('#peer-code');const status=root.querySelector('#pair-status');copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent.replaceAll(' ',''));copy.textContent='Kopyalandı';setTimeout(()=>copy.textContent='Kodu kopyala',1400)}catch{copy.textContent='Seçip kopyala'}});root.querySelector('#connect').addEventListener('click',()=>{if(input.value.replace(/\D/g,'').length<9){input.focus();input.setCustomValidity('9 haneli eşleştirme kodunu gir');input.reportValidity();return}input.setCustomValidity('');status.style.display='block'});input.addEventListener('input',()=>{input.setCustomValidity('')})})();
-  </script>
+  <script src="./app.js" defer></script>
 </div>
 
 
