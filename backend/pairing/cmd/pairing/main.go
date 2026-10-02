@@ -131,6 +131,9 @@ func getenv(key, fallback string) string {
 func (s *service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
+	if !s.applyCORS(w, r) {
+		return
+	}
 
 	switch {
 	case r.URL.Path == "/" || r.URL.Path == "/index.html":
@@ -167,6 +170,33 @@ func (s *service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		writeError(w, http.StatusNotFound, "not_found")
 	}
+}
+
+func (s *service) applyCORS(w http.ResponseWriter, r *http.Request) bool {
+	origin := strings.TrimSpace(r.Header.Get("Origin"))
+	if origin == "" {
+		return true
+	}
+	allowed := false
+	for _, value := range strings.Split(getenv("ALLOWED_ORIGINS", "http://tauri.localhost,http://localhost:8080,http://127.0.0.1:8080"), ",") {
+		if strings.TrimSpace(value) == origin {
+			allowed = true
+			break
+		}
+	}
+	if !allowed {
+		writeError(w, http.StatusForbidden, "origin_not_allowed")
+		return false
+	}
+	w.Header().Set("Access-Control-Allow-Origin", origin)
+	w.Header().Set("Vary", "Origin")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type")
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusNoContent)
+		return false
+	}
+	return true
 }
 
 func (s *service) create(w http.ResponseWriter, r *http.Request) {
