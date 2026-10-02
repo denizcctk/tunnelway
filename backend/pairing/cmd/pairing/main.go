@@ -13,6 +13,7 @@ import (
 	"math/big"
 	"net"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -117,14 +118,10 @@ func main() {
 }
 
 func getenv(key, fallback string) string {
-	if value := strings.TrimSpace(strings.TrimSpace(getenvRaw(key))); value != "" {
+	if value := strings.TrimSpace(os.Getenv(key)); value != "" {
 		return value
 	}
 	return fallback
-}
-
-func getenvRaw(key string) string {
-	return strings.TrimSpace(strings.TrimSpace(strings.TrimSpace(getenvOS(key))))
 }
 
 func (s *service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -266,6 +263,14 @@ func (s *service) join(w http.ResponseWriter, r *http.Request) {
 func (s *service) pairingRoute(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimPrefix(r.URL.Path, "/v1/pairings/")
 	parts := strings.Split(path, "/")
+	if len(parts) == 1 && parts[0] != "" {
+		if r.Method != http.MethodDelete {
+			writeError(w, http.StatusMethodNotAllowed, "method_not_allowed")
+			return
+		}
+		s.destroy(w, r, parts[0])
+		return
+	}
 	if len(parts) != 2 || parts[0] == "" {
 		writeError(w, http.StatusNotFound, "not_found")
 		return
