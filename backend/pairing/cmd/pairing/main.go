@@ -88,7 +88,7 @@ type errorResponse struct {
 	Error string `json:"error""
 }
 
-//go:embed web/index.html
+//go:embed web/*
 var appFS embed.FS
 
 func newService() *service {
@@ -136,17 +136,23 @@ func (s *service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch {
-	case r.URL.Path == "/" || r.URL.Path == "/index.html":
+	case r.URL.Path == "/" || r.URL.Path == "/index.html" || r.URL.Path == "/app.js":
 		if r.Method != http.MethodGet {
 			writeError(w, http.StatusMethodNotAllowed, "method_not_allowed")
 			return
 		}
-		page, err := appFS.ReadFile("web/index.html")
+		file := "web/index.html"
+		contentType := "text/html; charset=utf-8"
+		if r.URL.Path == "/app.js" {
+			file = "web/app.js"
+			contentType = "text/javascript; charset=utf-8"
+		}
+		page, err := appFS.ReadFile(file)
 		if err != nil {
 			writeError(w, http.StatusServiceUnavailable, "unavailable")
 			return
 		}
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Content-Type", contentType)
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write(page)
 	case r.URL.Path == "/v1/config":
