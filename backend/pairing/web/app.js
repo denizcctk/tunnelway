@@ -96,6 +96,20 @@
     state.role = "";
   }
 
+  async function closeSignaling() {
+    stopPolling();
+    if (state.sessionId && state.token) {
+      try {
+        await api("/v1/pairings/" + encodeURIComponent(state.sessionId), { method: "DELETE" });
+      } catch {
+        // The other device may have already closed the shared session.
+      }
+    }
+    state.sessionId = "";
+    state.token = "";
+    state.code = "";
+  }
+
   async function initializeHost() {
     try {
       state.api = await getApiBase();
@@ -330,7 +344,8 @@
 
   function updateApprovalState() {
     if (state.approvedHere && state.approvedThere) {
-      showStatus("Cihazlar doğrulandı ve doğrudan bağlandı. Dosya aktarımı sonraki aşamada eklenecek.");
+      showStatus("Cihazlar doğrulandı ve doğrudan bağlandı. Eşleştirme servisi oturumunu siliyor.");
+      closeSignaling();
     } else if (state.approvedHere) {
       showStatus("Sen onayladın. Diğer cihazın doğrulamasını bekliyor.");
     }
