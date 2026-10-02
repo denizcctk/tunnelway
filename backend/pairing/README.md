@@ -9,7 +9,9 @@ cd backend/pairing
 go run ./cmd/pairing
 ```
 
-The service listens on `:8080`. Set `ADDR` to change the listen address. `GET /healthz` returns a minimal health response.
+The service listens on `:8080`. Set `ADDR` to change the listen address. `GET /healthz` returns a minimal health response, and the bundled Windows interface is served at `/`. Set `TUNNELWAY_API_URL` at desktop build time to the deployed service URL; development builds default to `http://localhost:8080`.
+
+Set `STUN_URL` to a STUN server URL for cross-network connectivity. Set `ALLOWED_ORIGINS` to a comma-separated exact origin list when deploying; the local defaults include the Windows Tauri origin and localhost development origin.
 
 ## Protocol sketch
 
