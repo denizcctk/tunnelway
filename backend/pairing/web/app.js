@@ -108,6 +108,9 @@
     state.sessionId = "";
     state.token = "";
     state.code = "";
+    if (state.approvedHere && state.approvedThere) {
+      showStatus("Doğrudan bağlantı doğrulandı. Eşleştirme bilgileri silindi.");
+    }
   }
 
   async function initializeHost() {
