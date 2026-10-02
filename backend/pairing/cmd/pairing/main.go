@@ -6,6 +6,7 @@ import (
 	"crypto/subtle"
 	"encoding/base64"
 	"encoding/json"
+	"embed"
 	"errors"
 	"fmt"
 	"io"
@@ -84,8 +85,11 @@ type sendRequest struct {
 }
 
 type errorResponse struct {
-	Error string `json:"error"`
+	Error string `json:"error""
 }
+
+//go:embed web/index.html
+var appFS embed.FS
 
 func newService() *service {
 	return &service{
@@ -129,6 +133,25 @@ func (s *service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 
 	switch {
+	case r.URL.Path == "/" || r.URL.Path == "/index.html":
+		if r.Method != http.MethodGet {
+			writeError(w, http.StatusMethodNotAllowed, "method_not_allowed")
+			return
+		}
+		page, err := appFS.ReadFile("web/index.html")
+		if err != nil {
+			writeError(w, http.StatusServiceUnavailable, "unavailable")
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(page)
+	case r.URL.Path == "/v1/config":
+		if r.Method != http.MethodGet {
+			writeError(w, http.StatusMethodNotAllowed, "method_not_allowed")
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"stun_url": getenv("STUN_URL", "")})
 	case r.URL.Path == "/healthz":
 		if r.Method != http.MethodGet {
 			writeError(w, http.StatusMethodNotAllowed, "method_not_allowed")
@@ -251,6 +274,8 @@ func (s *service) join(w http.ResponseWriter, r *http.Request) {
 	sess.joined = true
 	sess.peerToken = hash
 	delete(s.codes, code)
+	sess.nextID++
+	sess.messages = append(sess.messages, signal{ID: sess.nextID, Kind: "peer_joined", Data: json.RawMessage(`{}`), To: "host"})
 	s.pingLocked(sess)
 
 	writeJSON(w, http.StatusOK, joinResponse{
