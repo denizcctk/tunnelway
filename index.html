@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#242429">
+<title>Tunnelway · Güvenli dosya aktarımı</title>
+<style>html,body{margin:0;min-height:100%;background:#242429}body{padding:24px;box-sizing:border-box}@media(max-width:600px){body{padding:10px}}</style>
+</head>
+<body>
+<div id="tunnelway-ui" class="tw-shell">
+  <style>
+    #tunnelway-ui{font-family:Inter,Segoe UI,system-ui,sans-serif;color:#f1eff0;background:#242429;border:1px solid #3c3a41;border-radius:18px;overflow:hidden;min-height:610px;--muted:#b9b3b7;--line:#45434a;--panel:#2d2c32;--accent:#e0c8cb}
+    #tunnelway-ui *{box-sizing:border-box}
+    #tunnelway-ui .frame{min-height:610px}
+    #tunnelway-ui .topbar{height:66px;border-bottom:1px solid #403e45;padding:0 5%;display:flex;align-items:center;justify-content:space-between;background:#29282e}
+    #tunnelway-ui .brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.2px;color:#f6f2f3}
+    #tunnelway-ui .brandmark{width:25px;height:25px;border:1.5px solid var(--accent);border-radius:8px;display:grid;place-items:center;color:var(--accent);font-size:14px}
+    #tunnelway-ui .toplinks{display:flex;align-items:center;gap:26px;color:#c4bec2;font-size:12px}
+    #tunnelway-ui .toplinks .current{color:var(--accent);height:66px;display:flex;align-items:center;border-bottom:2px solid var(--accent)}
+    #tunnelway-ui .privacy{display:flex;gap:8px;align-items:center;color:#eadadd;background:#373138;border:1px solid #574b51;border-radius:999px;padding:7px 11px;font-size:11px}
+    #tunnelway-ui .privacy span{font-size:8px}
+    #tunnelway-ui .main{padding:38px 6% 34px;max-width:1030px;width:100%;margin:auto}
+    #tunnelway-ui .intro{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px;gap:20px}
+    #tunnelway-ui h1{font-size:29px;letter-spacing:-.7px;margin:0 0 8px;font-weight:500;color:#f5f2f3}
+    #tunnelway-ui .sub{font-size:13px;color:#c0babd;margin:0;line-height:1.6}
+    #tunnelway-ui .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(270px,.85fr);gap:16px}
+    #tunnelway-ui .card{border:1px solid #49464d;background:#2b2a30;border-radius:13px;padding:22px}
+    #tunnelway-ui .card-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;font-size:13px;font-weight:500;color:#f0edef}
+    #tunnelway-ui .eyebrow{color:#c1b9be;font-size:10px;letter-spacing:.7px;text-transform:uppercase}
+    #tunnelway-ui .codebox{margin:10px 0 13px;background:#242329;border:1px solid #514a50;border-radius:10px;padding:15px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+    #tunnelway-ui .code{font:500 24px/1.2 ui-monospace,Consolas,monospace;letter-spacing:4px;color:#f3e5e7}
+    #tunnelway-ui .copy{border:1px solid #685b60;background:#39353c;border-radius:7px;color:#f0e4e6;padding:8px 10px;font-size:11px;cursor:pointer}
+    #tunnelway-ui .hint{font-size:11px;color:#beb8bc;line-height:1.55;margin:0}
+    #tunnelway-ui .secure-note{margin-top:19px;border-top:1px solid #454249;padding-top:14px;display:flex;gap:10px;color:#c7c0c4;font-size:11px;line-height:1.55}
+    #tunnelway-ui .secure-note b{color:#f0dcdf;font-weight:500}
+    #tunnelway-ui .input-label{display:block;color:#e2dcdf;font-size:11px;margin:19px 0 8px}
+    #tunnelway-ui .inputrow{display:flex;gap:8px}
+    #tunnelway-ui input{min-width:0;width:100%;background:#242329;border:1px solid #514d55;border-radius:8px;padding:12px 13px;color:#f7f3f4;font:16px ui-monospace,Consolas,monospace;letter-spacing:2px;outline:none}
+    #tunnelway-ui input:focus{border-color:#e0c8cb;box-shadow:0 0 0 3px #e0c8cb20}
+    #tunnelway-ui .connect{white-space:nowrap;border:0;border-radius:8px;background:#e0c8cb;color:#29252a;padding:0 16px;font-size:12px;font-weight:600;cursor:pointer}
+    #tunnelway-ui .pair-status{display:none;margin-top:13px;background:#393339;border:1px solid #65565c;border-radius:8px;padding:12px;color:#f1e1e4;font-size:11px;line-height:1.55}
+    #tunnelway-ui .right-card{padding:21px}
+    #tunnelway-ui .steps{display:grid;gap:18px;margin-top:20px}
+    #tunnelway-ui .step{display:grid;grid-template-columns:25px 1fr;gap:10px;align-items:start}
+    #tunnelway-ui .step-no{width:23px;height:23px;border:1px solid #61585e;border-radius:50%;display:grid;place-items:center;color:#e0c8cb;font-size:10px}
+    #tunnelway-ui .step strong{display:block;font-size:11px;font-weight:500;color:#eee9eb;margin:2px 0 4px}
+    #tunnelway-ui .step span{font-size:10px;line-height:1.55;color:#b9b2b7}
+    #tunnelway-ui .tag{display:inline-flex;margin-top:20px;border:1px solid #5e5258;background:#363238;color:#e9d7da;border-radius:999px;padding:7px 10px;font-size:10px}
+    #tunnelway-ui .foot{margin-top:22px;color:#b7b0b5;font-size:10px;display:flex;justify-content:space-between;gap:12px}
+    #tunnelway-ui button:hover{filter:brightness(1.1)}
+    @media(max-width:720px){#tunnelway-ui .topbar{padding:0 17px}.toplinks{gap:12px}.toplinks .current{display:none!important}#tunnelway-ui .privacy{font-size:10px;padding:7px 9px}#tunnelway-ui .main{padding:28px 17px}.intro{display:block!important}.intro .privacy{display:inline-flex;margin-top:16px}.grid{grid-template-columns:1fr}#tunnelway-ui h1{font-size:25px}.foot{flex-direction:column}}
+  </style>
+  <div class="frame">
+    <header class="topbar">
+      <div class="brand"><span class="brandmark">↗</span> tunnelway</div>
+      <nav class="toplinks" aria-label="Ana gezinme"><span class="current">Dosya aktar</span><span>Gizlilik</span></nav>
+      <div class="privacy"><span>●</span> Hesapsız · uçtan uca şifreli</div>
+    </header>
+    <main class="main">
+      <div class="intro"><div><h1>Cihazına güvenli bağlan</h1><p class="sub">Tek kullanımlık kodla eşleş; bağlantı tamamlanınca kod geçersiz olur.</p></div></div>
+      <div class="grid">
+        <section class="card">
+          <div class="card-title"><span>Bu cihaz için eşleştirme kodu</span><span class="eyebrow">TEK KULLANIMLIK</span></div>
+          <div class="codebox"><span class="code" id="pair-code">482 · 731 · 095</span><button class="copy" id="copy-code" type="button">Kodu kopyala</button></div>
+          <p class="hint">Kodu yalnızca dosya göndereceğin kişiyle paylaş. Eşleşme tamamlandığında bu kod kullanılamaz.</p>
+          <div class="secure-note"><span>◇</span><div><b>Özel anahtar bu cihazdan çıkmaz.</b> Kod cihazları buluşturur; aktarım anahtarları cihazlarda oluşturulur.</div></div>
+          <label class="input-label" for="peer-code">Karşı cihazın kodu</label>
+          <div class="inputrow"><input id="peer-code" placeholder="000 · 000 · 000" maxlength="17" aria-label="Karşı cihazın tek kullanımlık kodu"><button class="connect" id="connect" type="button">Bağlan</button></div>
+          <div class="pair-status" id="pair-status" role="status" aria-live="polite">Eşleşme isteği hazır. İki cihazda görünen doğrulama ifadesini karşılaştırıp onaylayın.</div>
+        </section>
+        <section class="card right-card">
+          <div class="card-title"><span>Güvenli eşleşme</span><span style="color:#e0c8cb;font-size:11px">● Hazır</span></div>
+          <div class="steps">
+            <div class="step"><span class="step-no">1</span><div><strong>Kodu paylaş</strong><span>Kısa kod iki cihazı buluşturur. Hesap açman gerekmez.</span></div></div>
+            <div class="step"><span class="step-no">2</span><div><strong>İfadeyi doğrula</strong><span>İki ekrandaki doğrulama ifadesi eşleşmeden devam etme.</span></div></div>
+            <div class="step"><span class="step-no">3</span><div><strong>Dosyayı aktar</strong><span>Alıcı onaylar; dosya gönderilmeden önce şifrelenir.</span></div></div>
+          </div>
+          <div class="tag">◉ Aktarım sonrası kod ve eşleşme silinir</div>
+        </section>
+      </div>
+      <div class="foot"><span>Oturum bilgisi ve aktarım geçmişi kaydedilmez</span><span>Önizleme · Bağlantı şu an örnek akıştır</span></div>
+    </main>
+  </div>
+  <script>
+    (()=>{const root=document.getElementById('tunnelway-ui');const copy=root.querySelector('#copy-code');const code=root.querySelector('#pair-code');const input=root.querySelector('#peer-code');const status=root.querySelector('#pair-status');copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent.replaceAll(' ',''));copy.textContent='Kopyalandı';setTimeout(()=>copy.textContent='Kodu kopyala',1400)}catch{copy.textContent='Seçip kopyala'}});root.querySelector('#connect').addEventListener('click',()=>{if(input.value.replace(/\D/g,'').length<9){input.focus();input.setCustomValidity('9 haneli eşleştirme kodunu gir');input.reportValidity();return}input.setCustomValidity('');status.style.display='block'});input.addEventListener('input',()=>{input.setCustomValidity('')})})();
+  </script>
+</div>
+
+
+</body>
+</html>
