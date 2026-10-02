@@ -13,6 +13,9 @@
   const approveButton = ui.querySelector("#approve-pair");
   const networkNote = ui.querySelector("#network-note");
 
+  connectButton.disabled = true;
+  copyButton.disabled = true;
+
   const state = {
     api: "",
     code: "",
@@ -110,6 +113,7 @@
       state.cursor = 0;
       state.pollStopped = false;
       codeNode.textContent = formatCode(state.code);
+      copyButton.disabled = false;
       showStatus("Tek kullanımlık kod hazır. Diğer cihazda bu kodu gir.");
       pollEvents();
     } catch (error) {
@@ -117,6 +121,8 @@
       showStatus(error.message === "service_not_configured"
         ? "Eşleştirme servisi bu uygulama derlemesi için yapılandırılmadı."
         : "Eşleştirme servisine ulaşılamadı. Bağlantı ayarını kontrol et.");
+    } finally {
+      connectButton.disabled = false;
     }
   }
 
